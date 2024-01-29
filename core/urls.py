@@ -21,7 +21,7 @@ import accounts
 
 urlpatterns = [
     path('admin', admin.site.urls),    
-    path('api/accounts/', include('accounts.urls', namespace='a2')),   
+    path('api/accounts/', include('accounts.urls')),   
     # path('api/', include('crud.urls')),   
     path('api/', include(router.urls)),  
     # path('api-auth', include())    

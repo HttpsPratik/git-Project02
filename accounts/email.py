@@ -1,4 +1,4 @@
-from email import message
+
 from django.core.mail import send_mail
 from accounts.models import CustomUser
 import random

@@ -7,6 +7,7 @@ from accounts.models import CustomUser
 from accounts.serializers import CustomUserSerializer, VerifyAccountSerializer, LoginSerializer
 from accounts.email import send_otp
 from django.utils import timezone
+from rest_framework_simplejwt.tokens import RefreshToken
 
 class RegisterAPI(APIView):
     def post(self, request):
@@ -109,57 +110,7 @@ class VerifyOtpAPI(APIView):
                 'message': f'Internal Server Error: {str(e)}',
                 'data': None
             })
-
-            # return Response({
-            #     'status': 500,
-            #     'message': 'Internal Server Error',
-            #     'data': None,
-            # })
-    # def post(self, request):
-    #     try:
-    #         data = request.data
-    #         user=CustomUser.objects.filter(email=data['email']).first()
-    #         if user:
-    #                 return Response({
-    #                     'status': 400,
-    #                     'message': 'verified',
-    #                     'data': {},
-    #                 })
-
-           
-    #         serializer = VerifyAccountSerializer(data=data)
-    #         if serializer.is_valid():
-    #             email = serializer.data['email']
-    #             otp = serializer.data['otp']
-    #             user = CustomUser.objects.get(email=email).first()
-
-                
-    #             if user.otp_code != otp:
-    #                 return Response({
-    #                     'status': 400,
-    #                     'message': 'Wrong OTP',
-    #                     'data': {},
-    #                 })
-
-    #             user.is_verified = True
-    #             user.save()
-
-    #             return Response({
-    #                 'status': 200,
-    #                 'message': 'Account Verified',
-    #                 'data': {},
-    #             })
-
-    #         return Response({
-    #             'status': 400,
-    #             'message': 'Something went wrong',
-    #             'data': serializer.errors,
-    #         })
-
-    #     except Exception as e:
-    #         print(e)
-
-
+    
 class LoginAPI(APIView):
     def post(self, request):
         try:
@@ -193,17 +144,21 @@ class LoginAPI(APIView):
 
                 
 
+              
+          
+                refresh = RefreshToken.for_user(CustomUser)
+
                 return Response({
-                    'status': 200,
-                    'message': 'Login successful',
-                    'data': {},
+                    'refresh': str(refresh),
+                    'access': str(refresh.access_token),
                 })
+            
 
             return Response({
-                'status': 400,
-                'message': 'Something went wrong',
-                'data': serializer.errors,
-            })
+                    'status': 400,
+                    'message': 'Something went wrong',
+                    'data': serializer.errors,
+                })
 
         except Exception as e:
             print(e)

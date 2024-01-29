@@ -16,9 +16,3 @@ class Comment(models.Model):
     
 
 
-#For decoration
-# class users(models.Model):
-#     name = models.CharField(max_length=20)
-#     age=models.IntegerField()
-#     title = models.CharField(max_length=20)
-#     description = models.TextField()
