@@ -3,13 +3,13 @@ from rest_framework import serializers
 from accounts.models import CustomUser
 
 
-class CustomUserSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = CustomUser
-        fields = [ 'email', 'password', 'is_verified']
+class CustomUserSerializer(serializers.Serializer):
+    email= serializers.EmailField(max_length=40)
+    password = serializers.CharField()
+    is_verified= serializers.BooleanField(default=False)
 
-    # def create(self, validated_data):
-    #     return CustomUser.objects.create(**validated_data)
+    def create(self, validated_data):
+        return CustomUser.objects.create(**validated_data)
 
 
 class VerifyAccountSerializer(serializers.Serializer):

@@ -15,7 +15,13 @@ class RegisterAPI(APIView):
            
             data = request.data
             
+            if 'email' not in data or not data['email']:
+                return Response({
+                    'status': 400,
+                    'message': 'Email is required.',
+    })
             user=CustomUser.objects.filter(email=data['email']).first()
+
             if user:
                 return Response({
                 'status': 400,

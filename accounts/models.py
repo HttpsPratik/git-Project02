@@ -3,13 +3,12 @@ from django.db import models
 
 from .manager import UserManager
 
+
 class CustomUser(AbstractUser):
     
     email = models.EmailField(unique=True)
-    # USERNAME_FIELD = email
     is_verified = models.BooleanField(default=False)
     otp_code = models.CharField(max_length=6, blank=True, null=True)
-    # otp_expires_at = models.DateField(auto_now=True)
     username = models.CharField(max_length=150, unique=False, blank=True, null=True)
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
@@ -23,3 +22,7 @@ class CustomUser(AbstractUser):
     def __str__(self):
         return self.email
 
+    
+   
+
+    
