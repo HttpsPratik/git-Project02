@@ -1,12 +1,12 @@
-from crud.models import Comment
+from tokenize import Comment
 from django.http import Http404
 from crud.serializers import CommentSerializer
+from crud.service import CommentService
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.permissions import IsAuthenticated
-from crud.service import CommentService
 
 class CrudListView(APIView):
     def get(self, request):
@@ -25,6 +25,12 @@ class CrudDetailView(APIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
 
+    def get_object(self,pk):
+        comment = CommentService.get_comment_by_id(pk)
+        if comment is None:
+            raise Http404("Doesn't exist")
+        return comment
+    
     def get(self, request):
         comment = self.get_object.all()
         serializer = CommentSerializer(comment)
