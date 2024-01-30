@@ -1,5 +1,4 @@
 import email
-import traceback
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.contrib.auth import authenticate
@@ -8,6 +7,7 @@ from accounts.serializers import CustomUserSerializer, VerifyAccountSerializer, 
 from accounts.email import send_otp
 from django.utils import timezone
 from rest_framework_simplejwt.tokens import RefreshToken
+
 
 class RegisterAPI(APIView):
     def post(self, request):
@@ -152,7 +152,7 @@ class LoginAPI(APIView):
 
               
           
-                refresh = RefreshToken.for_user(CustomUser)
+                refresh = RefreshToken.for_user(user)
 
                 return Response({
                     'refresh': str(refresh),
