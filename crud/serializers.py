@@ -2,7 +2,6 @@ import email
 from rest_framework import serializers
 from crud.models import Comment
 
-
 class CommentSerializer(serializers.Serializer):
     email = serializers.EmailField(max_length=59)
     title = serializers.CharField(max_length=20)
