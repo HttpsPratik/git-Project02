@@ -8,20 +8,16 @@ from accounts.email import send_otp
 from django.utils import timezone
 from rest_framework_simplejwt.tokens import RefreshToken
 
-
 class RegisterAPI(APIView):
     def post(self, request):
         try:
-           
             data = request.data
-            
             if 'email' not in data or not data['email']:
                 return Response({
                     'status': 400,
                     'message': 'Email is required.',
-    })
+                 })
             user=CustomUser.objects.filter(email=data['email']).first()
-
             if user:
                 return Response({
                 'status': 400,
@@ -32,20 +28,17 @@ class RegisterAPI(APIView):
             if serializer.is_valid():
                 serializer.save()
                 send_otp(serializer.data['email'])
-                
-                
+             
                 return Response(data={
                     'status': 200,
                     'message': 'Registration successful. Check your email for verification.',
                     'data': serializer.data,
                 })
-           
             return Response({
                 'status': 400,
                 'message': 'Something went wrong',
                 'data': serializer.errors,
             })
-
         except Exception as e:
             return Response({
                 'status': 400,
@@ -53,8 +46,6 @@ class RegisterAPI(APIView):
                 'data': {str(e)}
             })
             
-
-
     def get(self, request):
         users = CustomUser.objects.all()
         serializer = CustomUserSerializer(users, many=True)
@@ -63,7 +54,6 @@ class RegisterAPI(APIView):
             'message': 'User list retrieved successfully',
             'data': serializer.data,
         })
-
 
 class VerifyOtpAPI(APIView):
     def post(self, request):
@@ -84,12 +74,6 @@ class VerifyOtpAPI(APIView):
                             'message': 'Account Verified',
                             'data': None,
                         })
-                    else:
-                        return Response({
-                            'status': 200,
-                            'message': 'User is already verified',
-                            'data': serializer.data
-                        })
                 except CustomUser.DoesNotExist:
                     print(f"No user found with email: {email} and OTP: {otp_code}")
                     return Response({
@@ -97,11 +81,6 @@ class VerifyOtpAPI(APIView):
                         'message': 'Invalid email or OTP',
                         'data': None
                     })
-            return Response({
-                'status': 400,
-                'message': 'Invalid input data',
-                'data': serializer.errors
-            })
         except Exception as e:
             print(f"Exception: {e}")
             return Response({
