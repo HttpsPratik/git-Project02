@@ -23,12 +23,10 @@ class RegisterAPI(APIView):
                 'status': 400,
                 'message': 'User already exist.',
             })
-
             serializer = CustomUserSerializer(data=data)
             if serializer.is_valid():
                 serializer.save()
                 send_otp(serializer.data['email'])
-             
                 return Response(data={
                     'status': 200,
                     'message': 'Registration successful. Check your email for verification.',
@@ -117,7 +115,6 @@ class LoginAPI(APIView):
                         'data': {},
                     })
                 refresh = RefreshToken.for_user(user)
-
                 return Response({
                     'refresh': str(refresh),
                     'access': str(refresh.access_token),

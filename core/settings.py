@@ -142,9 +142,9 @@ EMAIL_USE_SSL = False
 
 REST_FRAMEWORK = {
         #To make Read Only
-     'DEFAULT_PERMISSION_CLASSES': [ 
-        'rest_framework.permissions.IsAuthenticated'
-     ],
+    #  'DEFAULT_PERMISSION_CLASSES': [ 
+    #     'rest_framework.permissions.IsAuthenticated'
+    #  ],
         #For POST authentication
     'DEFAULT_AUTHENTICATION_CLASSES': [
         
