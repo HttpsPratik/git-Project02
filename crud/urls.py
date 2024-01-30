@@ -1,12 +1,6 @@
 from django.urls import path
-from crud.views import ListView,DetailView
-
-
+from crud.views import CrudDetailView, CrudListView
 
 urlpatterns = [
-  
-    path('list/', ListView.as_view(), name='ListView'),   
-    path('detail/<int:pk>/', DetailView.as_view(), name='DetailView'),
-    
- 
-]
+    path('list/', CrudListView.as_view(), name='ListView'),   
+    path('detail/<int:pk>/', CrudDetailView.as_view(), name='DetailView'),]

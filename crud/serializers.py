@@ -12,11 +12,8 @@ class CommentSerializer(serializers.Serializer):
         return Comment.objects.create(**validated_data)
     
     def update(self, instance, validated_data):
-        
         instance.email = validated_data.get('email', instance.email)
         instance.title = validated_data.get('title', instance.title)
         instance.description = validated_data.get('description', instance.description)
         instance.save()
         return instance
-    
- 

@@ -7,9 +7,7 @@ from rest_framework import status
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.permissions import IsAuthenticated
 
-
-
-class ListView(APIView):
+class CrudListView(APIView):
     def get(self, request):
         comments = Comment.objects.all()
         serializer = CommentSerializer(comments, many=True)
@@ -22,17 +20,12 @@ class ListView(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-class DetailView(APIView):
+class CrudDetailView(APIView):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
-    def get_object(self, pk):
-        try:
-            return Comment.objects.get(pk=pk)
-        except Comment.DoesNotExist:
-            raise Http404
 
-    def get(self, request, pk):
-        comment = self.get_object(pk)
+    def get(self, request):
+        comment = self.get_object.all()
         serializer = CommentSerializer(comment)
         return Response(serializer.data)
 
