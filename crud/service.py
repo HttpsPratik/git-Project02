@@ -13,9 +13,12 @@ class CommentService:
     def create_comment(self,data):
             return Comment.objects.create(**data)
     
-    def update_comment(self,data, comment):
-            comment.save()
-            return comment
+    def update_comment(self,data, comment,instance,validated_data):
+        instance.email = validated_data.get('email', instance.email)
+        instance.title = validated_data.get('title', instance.title)
+        instance.description = validated_data.get('description', instance.description)
+        comment.save()
+        return comment
     
     def delete_comment(self,comment):
             comment.delete()

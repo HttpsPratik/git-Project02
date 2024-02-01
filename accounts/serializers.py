@@ -11,8 +11,8 @@ class CustomUserSerializer(serializers.Serializer):
         return CustomUser.objects.create(**validated_data)
 
 class VerifyAccountSerializer(serializers.Serializer):
-    email = serializers.EmailField()
-    otp = serializers.CharField()
+        email = serializers.EmailField()
+        otp = serializers.CharField()
     
 class LoginSerializer(serializers.Serializer):
     email = serializers.EmailField()
