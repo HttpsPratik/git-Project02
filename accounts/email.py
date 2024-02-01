@@ -1,9 +1,7 @@
-from email import message
 from django.core.mail import send_mail
-from dashboard.models import CustomUser
+from accounts.models import CustomUser
 import random
 from django.conf import settings
-
 
 def send_otp (email):
     subject ="Email verification account"

@@ -1,105 +1,50 @@
-
-from multiprocessing import context
-from urllib import request
-
-from django.shortcuts import render,redirect
-from django.views import View
-from crud.models import Comment
-from rest_framework import viewsets
+from tokenize import Comment
+from django.http import Http404
 from crud.serializers import CommentSerializer
-# from rest_framework.decorators import action
-# from rest_framework.authentication import SessionAuthentication
-# from rest_framework.permissions import AllowAny
+from crud.service import CommentService
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+from rest_framework_simplejwt.authentication import JWTAuthentication
+from rest_framework.permissions import IsAuthenticated
 
+class CrudListView(APIView):
+    def get(self, request):
+        comments = CommentService.get_all_comments()
+        serializer = CommentSerializer(comments, many=True)
+        return Response(serializer.data)
 
+    def post(self, request):
+        serializer = CommentSerializer(data=request.data)
+        if serializer.is_valid():
+            CommentService.create_comment(serializer.validated_data)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-class CommentViewsets(viewsets.ModelViewSet):
-   queryset = Comment.objects.all()
-   serializer_class = CommentSerializer
-   # authentication_classes = [SessionAuthentication]
-   # permission_classes = [AllowAny]
+class CrudDetailView(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
 
-
-   # Exploring Decoration
-
-   # @action(detail=True, methods=['get'])
-   # def users(self,request,pk=None):
-   #    try:
-   #       Comment = Comment.objects.get(pk=pk)
-   #       users = users.objects.filter(Comment=Comment)
-   #       users_serializer = UsersSerializer(users, many = True, context={'request':request})
-
-   #       return Response(users_serializer.data)
-   #    except Exception as e:
-   #       print (e)
-   #       return Response({
-   #          'message' : 'User might not exist'
-   #       })
-
-
-
-# class home(viewsets.ModelViewSet):
-#     def get(self, request):
-#         return render(request, 'dashboard\home.html')
-
-
-
-
-
-
-# class add_adoption(views):
-#    def post (self, request):
+    def get_object(self,pk):
+        comment = CommentService.get_comment_by_id(pk)
+        if comment is None:
+            raise Http404("Doesn't exist")
+        return comment
     
-#     dashboard_email =  request.POST.get("dashboard_email")
-#     dashboard_title =  request.POST.get("dashboard_title")
-#     dashboard_description = request.POST.get("dashboard_description")
-#     dashboard_image = request.POST.get("dashboard_image")
-    
+    def get(self, request):
+        comment = self.get_object.all()
+        serializer = CommentSerializer(comment)
+        return Response(serializer.data)
 
-#     s = Comment()
-#     s.email = dashboard_email
-#     s.title = dashboard_title
-#     s.description = dashboard_description
-#     s.image = dashboard_image
-    
-#     s.save()
-#     return redirect("home")
-   
-#    def get(self,request): 
-#     return render(request, 'dashboard/add_adoption.html')
-   
-   
+    def put(self, request, pk):
+        comment = self.get_object(pk)
+        serializer = CommentSerializer(comment, data=request.data)
+        if serializer.is_valid():
+            CommentService.update_comment(serializer.validated_data)
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-
-# class delete_dashboard(views):
-#    def get(self, request, name): 
-#     s=Comment.objects.get(pk=name)
-#     s.delete()
-#     return redirect("/dashboard/home/")
-  
-  
-# class update_dashboard(views):
-#    def get(self, request, name):
-#       dashboard=Comment.objects.get(pk=name)
-#       context = "{'dashboard/home':dashboard}"
-#       return render(request,"dashboard/update_adoption.html", context)
-
-
-# class do_update_dashboard(views):
-#     def post(self, request,name):
-#        dashboard_email =  request.POST.get("dashboard_email")
-#        dashboard_title =  request.POST.get("dashboard_title")
-#        dashboard_description = request.POST.get("dashboard_description")
-#        dashboard_image = request.POST.get("dashboard_image")
-
-    
-#        dashboard=Comment.objects.get(pk=name)
-#        dashboard.email = dashboard_email
-#        dashboard.title = dashboard_title
-#        dashboard.description = dashboard_description
-#        dashboard.image = dashboard_image
-       
-#        dashboard.save()
-       
-#        return redirect("/dashboard/home/")
-
+    def delete(self, request, pk):
+        comment = self.get_object(pk)
+        CommentService.delete_comment(comment)
+        return Response({'success': True, 'message': 'User deleted successfully'})
